@@ -21,6 +21,22 @@ In many modern React applications, server-fetched data and transient local UI st
 
 ---
 
+##Project Structure
+
+src/
+├── app/
+│   ├── globals.css         # Clean styling baseline & Tailwind imports
+│   ├── layout.tsx          # Root layout wrapped with QueryProvider
+│   └── page.tsx            # Sprint backlog interface & combined state consumers
+├── hooks/
+│   └── useTasks.ts         # React Query custom hook (queries, mutations, cache updates)
+├── providers/
+│   └── QueryProvider.tsx   # React Query client boundary provider
+└── store/
+    └── useFilterStore.ts   # Zustand client state store (filters & search)
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
