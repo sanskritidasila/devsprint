@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevSprint — Engineering Backlog & Task Workspace
 
-## Getting Started
+A responsive sprint task management platform demonstrating clean **state separation** between asynchronous server caching and client UI state using Next.js (App Router), TanStack React Query, and Zustand.
 
-First, run the development server:
+🔗 **Live Deployment:** [devsprint-silk.vercel.app](https://devsprint-silk.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💡 Architecture & Key Decisions
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+In many modern React applications, server-fetched data and transient local UI states are mixed together, leading to unnecessary re-renders, prop drilling, and complex caching logic. DevSprint decouples these concerns into two distinct layers:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Server State Layer (TanStack React Query)
+- **Data Caching & Lifecycle:** Fetches and hydrates initial sprint tickets with configured `staleTime` (5 minutes) to avoid redundant network round-trips.
+- **Direct Cache Mutation:** Uses `useMutation` with `queryClient.setQueryData` to update backlog items (creation, status toggle, and deletion) directly in the local query cache for instant UI feedback without requiring full page refetches.
+- **Stable Provider Instance:** The `QueryClient` is initialized inside a `useState` lazy-initializer in a dedicated client boundary (`QueryProvider.tsx`), guaranteeing that the cache instance remains stable across re-renders.
 
-## Learn More
+### 2. Client UI State Layer (Zustand)
+- **Independent Filter Store:** Manages local filter states (`searchQuery` and `selectedPriority`) via a lightweight global Zustand store.
+- **Zero Prop-Drilling:** Filter controls in the search bar and priority selectors trigger updates directly to the store, allowing the list views to derive active subsets cleanly without context provider overhead.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Framework:** Next.js 16 (App Router)
+- **Server State & Cache:** TanStack React Query (`@tanstack/react-query`)
+- **Client State Management:** Zustand
+- **Styling:** Tailwind CSS (Modern editorial light theme)
+- **Icons:** Lucide React
+- **Language:** TypeScript
+- **Deployment:** Vercel
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ✨ Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Backlog Orchestration:** Add, complete, and delete engineering tickets across categories (`Frontend`, `Architecture`, `State`, `Optimization`).
+- **Live Sprint Velocity:** Dynamic progress calculation tracking completion percentage against total active tickets.
+- **Client-Side Filtering:** Instant keyword search (matching titles, tags, and assignees) combined with priority pills (`HIGH`, `MEDIUM`, `LOW`).
+- **State-Aware UI:** Purpose-built empty states, loading indicators, and priority tags with distinct status styles.
+
+---
+
+## 🚀 Getting Started Locally
+
+### Prerequisites
+- Node.js 18.x or later
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/sanskritidasila/devsprint.git](https://github.com/sanskritidasila/devsprint.git)
+   cd devsprint
